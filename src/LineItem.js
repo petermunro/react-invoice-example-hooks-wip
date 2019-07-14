@@ -1,85 +1,98 @@
-import React, { Component } from "react";
+import React, { useState, useEffect } from "react";
+import PropTypes from "prop-types";
 
-class LineItem extends Component {
-  constructor(props) {
-    super(props);
-    this.state = Object.assign({}, props.lineItemData);
+let defaultInitialLineItemData = {
+  quantity: 1,
+  description: "",
+  unitPrice: 0
+};
 
-    this.handleQuantityChange = this.handleQuantityChange.bind(this);
-    this.handleDescriptionChange = this.handleDescriptionChange.bind(this);
-    this.handlePriceChange = this.handlePriceChange.bind(this);
-    this.handleDeleteClick = this.handleDeleteClick.bind(this);
-    this.pushToCaller = this.pushToCaller.bind(this);
+const LineItem = ({
+  id,
+  initialLineItemData = defaultInitialLineItemData,
+  onChange,
+  onDelete
+}) => {
+  let [lineItemData, setLineItemData] = useState(initialLineItemData);
+  useEffect(pushToCaller, [lineItemData]);
+
+  function handleQuantityChange(e) {
+    setLineItemData({ ...lineItemData, quantity: e.target.value });
   }
 
-  render() {
-    const { quantity, description, unitPrice } = this.props.lineItemData;
-    return (
-      <tr>
-        <td>
-          <input
-            type="number"
-            min="0"
-            value={quantity}
-            onChange={this.handleQuantityChange}
-            className="pa2 mr2 f6"
-          />
-        </td>
-        <td>
-          <input
-            type="text"
-            value={description}
-            onChange={this.handleDescriptionChange}
-            className="pa2 mr2 f6"
-          />
-        </td>
-        <td>
-          <input
-            type="text"
-            data-column="5"
-            value={unitPrice}
-            onChange={this.handlePriceChange}
-            className="pa2 mr2 f6"
-          />
-        </td>
-        <td>
-          <p className="pa2 mr2 f6">{quantity * unitPrice}</p>
-        </td>
-        <td>
-          <button
-            onClick={this.handleDeleteClick}
-            className="f6 link dim ph3 pv1 mb2 dib white bg-dark-red bn"
-          >
-            Delete
-          </button>
-        </td>
-      </tr>
-    );
+  function handleDescriptionChange(e) {
+    setLineItemData({ ...lineItemData, description: e.target.value });
   }
 
-  handleQuantityChange(e) {
-    this.setState({ quantity: e.target.value }, this.pushToCaller);
+  function handlePriceChange(e) {
+    setLineItemData({ ...lineItemData, unitPrice: e.target.value });
   }
 
-  handleDescriptionChange(e) {
-    this.setState({ description: e.target.value }, this.pushToCaller);
-  }
-
-  handlePriceChange(e) {
-    this.setState({ unitPrice: e.target.value }, this.pushToCaller);
-  }
-
-  pushToCaller() {
-    this.props.onChange(this.props.id, {
-      quantity: parseInt(this.state.quantity, 10),
-      description: this.state.description,
-      unitPrice: parseFloat(this.state.unitPrice)
+  function pushToCaller() {
+    onChange(id, {
+      quantity: parseInt(lineItemData.quantity, 10),
+      description: lineItemData.description,
+      unitPrice: parseFloat(lineItemData.unitPrice)
     });
   }
 
-  handleDeleteClick() {
-    this.props.onDelete(this.props.id);
+  function handleDeleteClick() {
+    onDelete(id);
   }
-}
+
+  const { quantity, description, unitPrice } = lineItemData;
+  return (
+    <tr>
+      <td>
+        <input
+          type="number"
+          min="0"
+          value={quantity}
+          onChange={handleQuantityChange}
+          className="pa2 mr2 f6"
+        />
+      </td>
+      <td>
+        <input
+          type="text"
+          value={description}
+          onChange={handleDescriptionChange}
+          className="pa2 mr2 f6"
+        />
+      </td>
+      <td>
+        <input
+          type="text"
+          data-column="5"
+          value={unitPrice}
+          onChange={handlePriceChange}
+          className="pa2 mr2 f6"
+        />
+      </td>
+      <td>
+        <p className="pa2 mr2 f6">{quantity * unitPrice}</p>
+      </td>
+      <td>
+        <button
+          onClick={handleDeleteClick}
+          className="f6 link dim ph3 pv1 mb2 dib white bg-dark-red bn"
+        >
+          Delete
+        </button>
+      </td>
+    </tr>
+  );
+};
+
+LineItem.propTypes = {
+  id: PropTypes.number.isRequired,
+  initialLineItemData: PropTypes.shape({
+    quantity: PropTypes.number,
+    description: PropTypes.string,
+    unitPrice: PropTypes.number
+  }),
+  onChange: PropTypes.func.isRequired,
+  onDelete: PropTypes.func.isRequired
+};
 
 export default LineItem;

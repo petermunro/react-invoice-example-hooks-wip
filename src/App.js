@@ -5,7 +5,7 @@ import LineItem from "./LineItem";
 function App() {
   let initialLineItemData = {
     quantity: 3,
-    desciption: "Widget",
+    description: "Widget",
     unitPrice: 8
   };
 
@@ -17,18 +17,27 @@ function App() {
 
   return (
     <div className="App">
-      <LineItem
-        id={1}
-        lineItemData={lineItemData}
-        onChange={handleChange}
-        onDelete={() =>
-          setLineItemData({
-            quantity: 0,
-            desciption: "",
-            unitPrice: 0
-          })
-        }
-      />
+      <table>
+        <tbody>
+          <LineItem
+            id={1}
+            initialLineItemData={lineItemData}
+            onChange={handleChange}
+            onDelete={() =>
+              setLineItemData({
+                quantity: 0,
+                desciption: "",
+                unitPrice: 0
+              })
+            }
+          />
+        </tbody>
+      </table>
+      <ul>
+        <li>Quantity: {lineItemData.quantity}</li>
+        <li>Description: {lineItemData.description}</li>
+        <li>Unit Price: {lineItemData.unitPrice}</li>
+      </ul>
     </div>
   );
 }
