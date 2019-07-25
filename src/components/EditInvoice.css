@@ -1,0 +1,9 @@
+.button-delete {
+  background-color: darkred;
+  border-color: darkred;
+}
+
+.button-add {
+  background-color: forestgreen;
+  border-color: green;
+}
